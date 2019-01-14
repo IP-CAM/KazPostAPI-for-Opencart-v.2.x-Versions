@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <modification>
-    <name>Kazshipping</name>
-    <code>kazshipping_simplecheckout(a)</code>
-    <version>2.1.5(v2.0.x-2.3.x)(autocomplete)</version>
-    <author>comtronics@mail.ru</author>
+	<name>Kazshipping</name>
+	<code>kazshipping_simplecheckout(a)</code>
+	<version>2.1.5(v2.0.x-2.3.x)(autocomplete)</version>
+	<author>comtronics@mail.ru</author>
 
-    <file path="catalog/view/theme/*/template/checkout/simplecheckout.tpl">		
-        <operation error="skip">
-            <search><![CDATA[<?php include $simple_footer ?>]]></search>
-            <add position="before" ><![CDATA[
+	<file path="catalog/view/theme/*/template/checkout/simplecheckout.tpl">
+		<operation error="skip">
+			<search><![CDATA[<?php include $simple_footer ?>]]></search>
+			<add position="before"><![CDATA[
 <style>
 	.disabled-field {
         background: #F8F8F8;
@@ -76,8 +76,7 @@ function getCities() {
 function restoreInput() { 
 	$('select[name *= city]').map(function (i, e) {
          $(e).replaceWith('<input name=' + $(e).attr("name") + ' id=' + $(e).attr("id") + ' value="' + city + '" placeholder="" data-onchange="reloadAll">');
-         $(e).change(function () {
-             $('input[name=shipping_method]:checked').trigger('change');
+         $(e).change(function () { $('input[name=shipping_method]:checked').trigger('change');
          });
          return i;
     });
@@ -93,8 +92,7 @@ function unableSelect() {
 	$('select[name *= zone_id]').map(function (i, e) {
          $(e).removeAttr("disabled");
 		 $(e).removeClass("disabled-field");
-         $(e).change(function () {
-             $('input[name=shipping_method]:checked').trigger('change');
+         $(e).change(function () { $('input[name=shipping_method]:checked').trigger('change');
          });
          return i;
     });
@@ -104,9 +102,7 @@ $(function () {
     if (shipping !== undefined) {
         if (shipping.indexOf('kazpost') > -1 || shipping.indexOf('exline') > -1) {
 			$('[name *= city]').val('');
-			$('[name *= zone_id]').prop('selectedIndex', 0);
-        }
-		$('input[name=shipping_method]:checked').trigger('change');
+			$('[name *= zone_id]').prop('selectedIndex', 0); } $('input[name=shipping_method]:checked').trigger('change');
 		checkEvent();
 		if (shipping.indexOf('kazpost') > -1) {		
 			disableSelect();	
@@ -114,14 +110,14 @@ $(function () {
     }
 });
 </script>
-            ]]></add>
-        </operation>
-    </file>
+            ]]>			</add>
+		</operation>
+	</file>
 
-    <file path="catalog/view/theme/*/template/checkout/shipping_address.tpl">
-        <operation error="skip">
-            <search index='1'><![CDATA[<script type="text/javascript"><!--]]></search>
-            <add position="before" ><![CDATA[
+	<file path="catalog/view/theme/*/template/checkout/shipping_address.tpl">
+		<operation error="skip">
+			<search index='1'><![CDATA[<script type="text/javascript"><!--]]></search>
+			<add position="before"><![CDATA[
 		<style>
 		.dropdown-menu {
                     max-height: 200px;
@@ -131,11 +127,11 @@ $(function () {
                     font-size: 12px;
 		}
 		</style>
-            ]]></add>
-        </operation>
-        <operation error="skip">
-            <search><![CDATA[$('#collapse-shipping-address select[name=\'country_id\']').trigger('change');]]></search>
-            <add position="before" ><![CDATA[
+            ]]>			</add>
+		</operation>
+		<operation error="skip">
+			<search><![CDATA[$('#collapse-shipping-address select[name=\'country_id\']').trigger('change');]]></search>
+			<add position="before"><![CDATA[
 			var shipping, country, zone, processing;
 			$('#collapse-shipping-address select[name=\'zone_id\']').on('change', function(e) {
                     shipping = $('input[name=shipping_method]:checked').val();
@@ -177,13 +173,13 @@ $(function () {
 			});
 			
 			$('#collapse-shipping-address select[name=\'zone_id\']').trigger('change');
-            ]]></add>
-        </operation>
-    </file>
+            ]]>			</add>
+		</operation>
+	</file>
 	<file path="catalog/view/theme/*/template/checkout/simplecheckout_shipping_address.tpl">
 		<operation error="skip">
-            <search><![CDATA[<div class="simplecheckout-block" id="simplecheckout_shipping_address"]]></search>
-            <add position="before" ><![CDATA[		
+			<search><![CDATA[<div class="simplecheckout-block" id="simplecheckout_shipping_address"]]></search>
+			<add position="before"><![CDATA[		
 		<style>
 		.dropdown-menu {
                     max-height: 200px;
@@ -193,7 +189,7 @@ $(function () {
                     font-size: 12px;
 		}
 		</style>
-            ]]></add>
-        </operation>
-	 </file>	
+            ]]>			</add>
+		</operation>
+	</file>	
 </modification>

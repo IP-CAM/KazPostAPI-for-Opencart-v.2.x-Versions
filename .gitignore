@@ -19,3 +19,5 @@ vqmod/vqcache/*
 vqmod/checked.cache
 vqmod/mods.cache
 kazpost.code-workspace
+.zip
+.iep
