@@ -1,2 +1,2 @@
-# KazPost
+# KazPostAPI
 Kazpost shipping cost calculation
