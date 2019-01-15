@@ -505,64 +505,74 @@
         padding-right: 20px;
         font-size: 12px;
     }
-	/*  vertical tabs  */
-.tabs-left, .tabs-right {
-    border-bottom: none;
-    padding-top: 2px;
-}
-.tabs-left {
-    border-right: 1px solid #ddd;
-}
-.tabs-right {
-    border-left: 1px solid #ddd;
-}
-.tabs-left>li, .tabs-right>li {
-    float: none;
-    margin-bottom: 2px;
-}
-.tabs-left>li {
-    margin-right: -1px;
-}
-.tabs-right>li {
-    margin-left: -1px;
-}
-.tabs-left>li.active>a,
-.tabs-left>li.active>a:hover,
-.tabs-left>li.active>a:focus {
-    border-bottom-color: #ddd;
-    border-right-color: transparent;
-}
 
-.tabs-right>li.active>a,
-.tabs-right>li.active>a:hover,
-.tabs-right>li.active>a:focus {
-    border-bottom: 1px solid #ddd;
-    border-left-color: transparent;
-}
-.tabs-left>li>a {
-    border-radius: 4px 0 0 4px;
-    margin-right: 0;
-    display:block;
-}
-.tabs-right>li>a {
-    border-radius: 0 4px 4px 0;
-    margin-right: 0;
-}
+    /*  vertical tabs  */
+    .tabs-left,
+    .tabs-right {
+        border-bottom: none;
+        padding-top: 2px;
+    }
 
-.control-label.required:before {
-    content: '* ';
-    color: #F00;
-    font-weight: bold;
-}
+    .tabs-left {
+        border-right: 1px solid #ddd;
+    }
 
-table.form > tbody > tr > td {	
-    width: 200px;
-}
+    .tabs-right {
+        border-left: 1px solid #ddd;
+    }
+
+    .tabs-left>li,
+    .tabs-right>li {
+        float: none;
+        margin-bottom: 2px;
+    }
+
+    .tabs-left>li {
+        margin-right: -1px;
+    }
+
+    .tabs-right>li {
+        margin-left: -1px;
+    }
+
+    .tabs-left>li.active>a,
+    .tabs-left>li.active>a:hover,
+    .tabs-left>li.active>a:focus {
+        border-bottom-color: #ddd;
+        border-right-color: transparent;
+    }
+
+    .tabs-right>li.active>a,
+    .tabs-right>li.active>a:hover,
+    .tabs-right>li.active>a:focus {
+        border-bottom: 1px solid #ddd;
+        border-left-color: transparent;
+    }
+
+    .tabs-left>li>a {
+        border-radius: 4px 0 0 4px;
+        margin-right: 0;
+        display: block;
+    }
+
+    .tabs-right>li>a {
+        border-radius: 0 4px 4px 0;
+        margin-right: 0;
+    }
+
+    .control-label.required:before {
+        content: '* ';
+        color: #F00;
+        font-weight: bold;
+    }
+
+    table.form>tbody>tr>td {
+        width: 200px;
+    }
 </style>
-<script type="text/javascript">< !--
-        // var filename, sheet, row;
-
-        $('#tabs a:first').tab('show');
+<script type="text/javascript">
+   
+    $('#tabs a:first').tab('show');
     $('#verticalTab a:first').tab('show');
 
     $('input[name=\'kazpost_origin_city-1\'], input[name=\'kazpost_origin_city-2\'], input[name=\'destination\']').autocomplete({
@@ -576,7 +586,8 @@ table.form > tbody > tr > td {
             filename = $('input[name=\'kazpost_server' + server + '_xls\']').val();
             sheet = "<?php echo $kazpost_fromto_sheetname; ?>";
             $.ajax({
-                url: 'index.php?route=shipping/kazpost/autocomplete&token=<?php echo $token; ?>&file=' + filename + '&sheet=' + sheet + '&server=' + server,
+                url: 'index.php?route=shipping/kazpost/autocomplete&token=<?php echo $token; ?>&file=' +
+                    filename + '&sheet=' + sheet + '&server=' + server,
                 dataType: 'json',
                 beforeSend: function () {
                     $("#ajaxloader").show();
@@ -616,7 +627,9 @@ table.form > tbody > tr > td {
             // }
 
             $.ajax({
-                url: 'index.php?route=shipping/kazpost/' + processing + '&token=<?php echo $token; ?>&file=' + filename + '&sheet=' + catalog[1] + '&server=' + catalog[0],
+                url: 'index.php?route=shipping/kazpost/' + processing +
+                    '&token=<?php echo $token; ?>&file=' + filename + '&sheet=' + catalog[1] +
+                    '&server=' + catalog[0],
                 dataType: 'json',
                 beforeSend: function () {
                     $("#ajaxloader").show();
@@ -647,7 +660,9 @@ table.form > tbody > tr > td {
         }
     };
 
-    $('input[name *= \\[product\\]], input[name *=\\[specmarks\\]], input[name *= \\[sendmethod\\]], input[name *=\\[mailcat\\]], input[name *=\\[sndrctg\\]]').not('[type=hidden]').autocomplete(settings);
+    $(
+        'input[name *= \\[product\\]], input[name *=\\[specmarks\\]], input[name *= \\[sendmethod\\]], input[name *=\\[mailcat\\]], input[name *=\\[sndrctg\\]]'
+    ).not('[type=hidden]').autocomplete(settings);
 
 
     function addrow(server) {
@@ -657,29 +672,50 @@ table.form > tbody > tr > td {
 
         html = '<tr>';
         html += '<td class="text-center">' + row + '</td>';
-        html += '<td class="text-left"><input type="text" name="kazpost_methods-' + server + '[' + row + '][name]" value="" placeholder="<?php echo $help_data_input; ?>" id="' + server + '-name" class="form-control" />';
-        html += '<input type="hidden" name="kazpost_methods-' + server + '[' + row + '][id]" value="' + row + '" /></td>';
-        html += '<td class="text-left"><input type="text" name="kazpost_methods-' + server + '[' + row + '][product]" value="" placeholder="<?php echo $help_data_select; ?>" id="' + server + '-Product" class="form-control" />';
+        html += '<td class="text-left"><input type="text" name="kazpost_methods-' + server + '[' + row +
+            '][name]" value="" placeholder="<?php echo $help_data_input; ?>" id="' + server +
+            '-name" class="form-control" />';
+        html += '<input type="hidden" name="kazpost_methods-' + server + '[' + row + '][id]" value="' + row +
+            '" /></td>';
+        html += '<td class="text-left"><input type="text" name="kazpost_methods-' + server + '[' + row +
+            '][product]" value="" placeholder="<?php echo $help_data_select; ?>" id="' + server +
+            '-Product" class="form-control" />';
         html += '<input type="hidden" name="kazpost_methods-' + server + '[' + row + '][product_id]" value="" /></td>';
-        html += '<td class="text-left"><input type="text" name="kazpost_methods-' + server + '[' + row + '][sendmethod]" value="" placeholder="<?php echo $help_data_select; ?>" id="' + server + '-SendMethod" class="form-control" />';
-        html += '<input type="hidden" name="kazpost_methods-' + server + '[' + row + '][sendmethod_id]" value="" /></td>';
-        html += '<td class="text-left"><input type="text" name="kazpost_methods-' + server + '[' + row + '][mailcat]" value="" placeholder="<?php echo $help_data_select; ?>" id="' + server + '-MailCat" class="form-control" />';
+        html += '<td class="text-left"><input type="text" name="kazpost_methods-' + server + '[' + row +
+            '][sendmethod]" value="" placeholder="<?php echo $help_data_select; ?>" id="' + server +
+            '-SendMethod" class="form-control" />';
+        html += '<input type="hidden" name="kazpost_methods-' + server + '[' + row +
+            '][sendmethod_id]" value="" /></td>';
+        html += '<td class="text-left"><input type="text" name="kazpost_methods-' + server + '[' + row +
+            '][mailcat]" value="" placeholder="<?php echo $help_data_select; ?>" id="' + server +
+            '-MailCat" class="form-control" />';
         html += '<input type="hidden" name="kazpost_methods-' + server + '[' + row + '][mailcat_id]" value="" /></td>';
         if (server == "server1") {
-            html += '<td class="text-left"><input type="text" name="kazpost_methods-' + server + '[' + row + '][specmarks]" value="" placeholder="<?php echo $help_data_select; ?>" id="' + server + '-SpecMarks" class="form-control" />';
-            html += '<input type="hidden" name="kazpost_methods-' + server + '[' + row + '][specmarks_id]" value="" /></td>';
+            html += '<td class="text-left"><input type="text" name="kazpost_methods-' + server + '[' + row +
+                '][specmarks]" value="" placeholder="<?php echo $help_data_select; ?>" id="' + server +
+                '-SpecMarks" class="form-control" />';
+            html += '<input type="hidden" name="kazpost_methods-' + server + '[' + row +
+                '][specmarks_id]" value="" /></td>';
         }
         if (server == "server2") {
-            html += '<td class="text-left"><input type="text" name="kazpost_methods-' + server + '[' + row + '][sndrctg]" value="" placeholder="<?php echo $help_data_select; ?>" id="' + server + '-SndrCtg" class="form-control" />';
-            html += '<input type="hidden" name="kazpost_methods-' + server + '[' + row + '][sndrctg_id]" value="" /></td>';
+            html += '<td class="text-left"><input type="text" name="kazpost_methods-' + server + '[' + row +
+                '][sndrctg]" value="" placeholder="<?php echo $help_data_select; ?>" id="' + server +
+                '-SndrCtg" class="form-control" />';
+            html += '<input type="hidden" name="kazpost_methods-' + server + '[' + row +
+                '][sndrctg_id]" value="" /></td>';
         }
-        html += '<td class="text-right"><input type="text" name="kazpost_methods-' + server + '[' + row + '][sort_order]" value="" placeholder="<?php echo $help_data_input; ?>" id="' + server + '-sort_order" class="form-control" /></td>';
-        html += '<td class="text-right"><button type="button" data-toggle="tooltip" title="<?php echo $button_delete; ?>" class="btn btn-danger"><i class="fa fa-trash-o"></i></button></td>';
+        html += '<td class="text-right"><input type="text" name="kazpost_methods-' + server + '[' + row +
+            '][sort_order]" value="" placeholder="<?php echo $help_data_input; ?>" id="' + server +
+            '-sort_order" class="form-control" /></td>';
+        html +=
+            '<td class="text-right"><button type="button" data-toggle="tooltip" title="<?php echo $button_delete; ?>" class="btn btn-danger"><i class="fa fa-trash-o"></i></button></td>';
         html += '</tr>';
 
         $('#tab-method-' + server + ' > tbody:last').append(html);
 
-        $('input[name *= \\[product\\]], input[name *=\\[specmarks\\]], input[name *= \\[sendmethod\\]], input[name *=\\[mailcat\\]], input[name *=\\[sndrctg\\]]').not('[type=hidden]').autocomplete(settings);
+        $(
+            'input[name *= \\[product\\]], input[name *=\\[specmarks\\]], input[name *= \\[sendmethod\\]], input[name *=\\[mailcat\\]], input[name *=\\[sndrctg\\]]'
+        ).not('[type=hidden]').autocomplete(settings);
     }
 
 
@@ -719,6 +755,6 @@ table.form > tbody > tr > td {
                 $('#input-rate').val(rate);
             }
         });
-    });
-//--></script>
+    });   
+</script>
 <?php echo $footer; ?>
