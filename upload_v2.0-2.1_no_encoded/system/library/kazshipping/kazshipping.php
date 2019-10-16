@@ -23,7 +23,7 @@ class Exline {
 	}
 }
 
-/* Server 1 Soap client */
+/*  Server 1 Soap client  */
 class HelperInfo {
 
     public $HelperType;
@@ -62,7 +62,7 @@ class KazpostWebClient extends SoapClient {
     }
 }
 
-/* Server 2 Soap client */
+/*  Server 2 Soap client  */
 class GetPostRateInfo {
 
     public $SndrCtg;
