@@ -49,7 +49,7 @@ class MailInfo {
 class KazpostWebClient extends SoapClient {
 
     public function __construct($wsdl = 'http://rates.kazpost.kz/postratesprod/postratesws.wsdl', $options = array(
-        'connection_timeout' => 60,
+        'connection_timeout' => 90,
         'cache_wsdl' => WSDL_CACHE_MEMORY,
         'trace' => 1,
         'soap_version' => 'SOAP 1.2',
@@ -81,7 +81,7 @@ class GetPostRateInfo {
 class KazpostWebClient2 extends SoapClient {
 
     public function __construct($wsdl = 'http://rates.kazpost.kz/postratesprodv2/postratesws.wsdl', $options = array(
-        'connection_timeout' => 60,
+        'connection_timeout' => 90,
         'cache_wsdl' => WSDL_CACHE_MEMORY,
         'trace' => 1,
         'soap_version' => 'SOAP 1.2',
