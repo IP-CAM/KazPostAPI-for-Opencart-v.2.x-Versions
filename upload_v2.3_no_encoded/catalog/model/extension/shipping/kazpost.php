@@ -96,7 +96,10 @@ class ModelShippingKazpost extends Model {
 						$params = new stdClass();
 						$params->GetPostRateInfo = $info;
 	
-						$response = $client->GetPostRate($params);	
+                        $response = $client->GetPostRate($params);
+                       // $last_request = $client->__getLastRequest();
+                       // file_put_contents('kazpost.txt', print_r($last_request, true), FILE_APPEND);
+                       // file_put_contents('kazpost.txt', print_r(PHP_EOL, true), FILE_APPEND);	
 						if (!isset($response->Sum)) { 
 							$rate = 'null';
 						} else {
