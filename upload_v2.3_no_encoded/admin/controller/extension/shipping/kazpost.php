@@ -515,25 +515,18 @@ class ControllerShippingKazpost extends Controller {
               file_put_contents('kazpost.txt', print_r($funcs, true), FILE_APPEND);
               file_put_contents('kazpost.txt', print_r(PHP_EOL, true), FILE_APPEND); */
             $old_error_handler = set_error_handler("myErrorHandler");
-            try {
+          //  try {
                 $client = new KazpostWebClient2();
                 $response = $client->GetPostRate($params);
                 if (is_soap_fault($response)) {
-                    // trigger_error("Сервер недоступен", E_USER_WARNING);
-                    throw new \Exception('Данные недоступны');
-                    //  restore_error_handler();
+trigger_error("Сервер недоступен", E_USER_WARNING);
+                  //  throw new \Exception('Данные недоступны');
                 } else {
                     restore_error_handler();
                 }
-            } catch (\Exception $e) {
-                // $last_request = $client->__getLastRequest();
-                // $test = $client->__doRequest($last_request, 'http://rates.kazpost.kz/postratesprodv2/postratesws.wsdl', 'GetPostRate', '1.1', $one_way = 0);
-                //  file_put_contents('kazpost.txt', print_r('CATCH', true), FILE_APPEND);
-                //  file_put_contents('kazpost.txt', print_r(PHP_EOL, true), FILE_APPEND);
-                //  file_put_contents('kazpost.txt', print_r($e->getMessage(), true), FILE_APPEND);
-                  trigger_error("Сервер недоступен", E_USER_WARNING);
-                //  restore_error_handler();
-            }
+            //} catch (\Exception $e) {
+            //      trigger_error("Сервер недоступен", E_USER_WARNING);
+           // }
 
             if (!isset($response->Sum)) {
                 $rate = 'null';
