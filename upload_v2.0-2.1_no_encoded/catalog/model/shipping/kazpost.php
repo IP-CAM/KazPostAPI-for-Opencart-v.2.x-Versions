@@ -102,22 +102,22 @@ class ModelShippingKazpost extends Model
                     }
                     $vendor->franchise();
 
-                    if ($server === '1') {                        
+                    if ($server === '1') {
                         $mailinfo = new MailInfo();
                         $mailinfo->Product = ($method['product_id'] !== '-1') ? $method['product_id'] : '';
                         $mailinfo->MailCat = ($method['mailcat_id'] !== '-1') ? $method['mailcat_id'] : '';
                         $mailinfo->SendMethod = ($method['sendmethod_id'] !== '-1') ? $method['sendmethod_id'] : '';
                         $mailinfo->SpecMarks = ($method['specmarks_id'] !== '-1') ? $method['specmarks_id'] : '';
                         $mailinfo->Weight = $weight;
-                        $mailinfo->From = $this->config->get('kazpost_origin_id');
+                        $mailinfo->From = $this->config->get('kazpost_origin_id1');
                         $mailinfo->To = $destination_id;
                         $params = new stdClass();
                         $params->MailInfo = $mailinfo;
-
+                        
                         $old_error_handler = set_error_handler("myErrorHandler");
                         do {
-                            try {   
-                                $client = new KazpostWebClient();                             
+                            try {
+                                $client = new KazpostWebClient();
                                 $response = $client->GetPostRate($params);
                                 if (is_soap_fault($response)) {
                                     throw new \Exception('Данные недоступны');
@@ -131,8 +131,8 @@ class ModelShippingKazpost extends Model
                                 if ($crashesn < $max_connect) {
                                     sleep(1);
                                 } else {
-                                    $response->ResponseInfo->ResponseText = '';
-                                    trigger_error("Сервер недоступен", E_USER_WARNING);
+                                    $response->ResponseInfo->ResponseText = 'Сервер недоступен';
+                                    // trigger_error("Сервер недоступен", E_USER_WARNING);
                                 }
                             }
                         } while ($crashesn < $max_connect);
@@ -144,7 +144,7 @@ class ModelShippingKazpost extends Model
                         }
                     }
 
-                    if ($server === '2') {                        
+                    if ($server === '2') {
                         $info = new GetPostRateInfo();
                         $info->SndrCtg = ($method['sndrctg_id'] !== '-1') ? $method['sndrctg_id'] : '';
                         $info->Product = ($method['product_id'] !== '-1') ? $method['product_id'] : '';
@@ -160,8 +160,8 @@ class ModelShippingKazpost extends Model
 
                         $old_error_handler = set_error_handler("myErrorHandler");
                         do {
-                            try {  
-                                $client = new KazpostWebClient2();                              
+                            try {
+                                $client = new KazpostWebClient2();
                                 $response = $client->GetPostRate($params);
                                 if (is_soap_fault($response)) {
                                     throw new \Exception('Данные недоступны');
@@ -176,7 +176,7 @@ class ModelShippingKazpost extends Model
                                     sleep(1);
                                 } else {
                                     $response->ResponseInfo->ResponseText = 'Сервер недоступен';
-                                   // trigger_error("Сервер недоступен", E_USER_WARNING);
+                                    // trigger_error("Сервер недоступен", E_USER_WARNING);
                                 }
                             }
                         } while ($crashesn < $max_connect);

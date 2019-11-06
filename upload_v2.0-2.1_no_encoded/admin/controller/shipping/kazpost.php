@@ -268,7 +268,7 @@ class ControllerShippingKazpost extends Controller
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
         $data['extension'] = $extension;
-         
+
         $tpl = version_compare(VERSION, '2.2.0', '>=') ? "" : ".tpl";
         $this->response->setOutput($this->load->view($extension . 'shipping/kazpost' . $tpl, $data));
         // $this->response->setOutput($this->load->view('shipping/kazpost.tpl', $data));
@@ -493,7 +493,7 @@ class ControllerShippingKazpost extends Controller
             $mailinfo->To = $destination_id;
             $params = new stdClass();
             $params->MailInfo = $mailinfo;
-
+            
             $old_error_handler = set_error_handler("myErrorHandler");
             do {
                 try {

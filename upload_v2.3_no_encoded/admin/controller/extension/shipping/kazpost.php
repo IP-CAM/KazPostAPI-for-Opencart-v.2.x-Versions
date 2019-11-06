@@ -493,7 +493,7 @@ class ControllerShippingKazpost extends Controller
             $mailinfo->To = $destination_id;
             $params = new stdClass();
             $params->MailInfo = $mailinfo;
-
+            
             $old_error_handler = set_error_handler("myErrorHandler");
             do {
                 try {
