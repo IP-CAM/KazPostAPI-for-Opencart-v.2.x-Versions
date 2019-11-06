@@ -2,7 +2,7 @@
 
 include_once(DIR_SYSTEM . 'library/kazshipping/kazshipping.php');
 include_once(DIR_SYSTEM . 'library/kazpost/Classes/PHPExcel/IOFactory.php');
-define('MODULE_VERSION', 'v2.1.6');
+define('MODULE_VERSION', 'v2.1.7');
 
 class ControllerShippingKazpost extends Controller
 {
@@ -267,6 +267,7 @@ class ControllerShippingKazpost extends Controller
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
+        $data['extension'] = $extension;
 
         $tpl = version_compare(VERSION, '2.2.0', '>=') ? "" : ".tpl";
         $this->response->setOutput($this->load->view($extension . 'shipping/kazpost' . $tpl, $data));

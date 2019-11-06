@@ -574,6 +574,8 @@
     $('#tabs a:first').tab('show');
     $('#verticalTab a:first').tab('show');
 
+    const extension = '<?php echo $extension; ?>'; 
+
     $('input[name=\'kazpost_origin_city-1\'], input[name=\'kazpost_origin_city-2\'], input[name=\'destination\']').autocomplete({
         source: function (request, response) {
             var server, filename, sheet;
@@ -585,7 +587,7 @@
             filename = $('input[name=\'kazpost_server' + server + '_xls\']').val();
             sheet = "<?php echo $kazpost_fromto_sheetname; ?>";
             $.ajax({
-                url: 'index.php?route=extension/shipping/kazpost/autocomplete&token=<?php echo $token; ?>&file=' +
+                url: 'index.php?route=' + extension + 'shipping/kazpost/autocomplete&token=<?php echo $token; ?>&file=' +
                     filename + '&sheet=' + sheet + '&server=' + server,
                 dataType: 'json',
                 beforeSend: function () {
@@ -626,7 +628,7 @@
             // }
 
             $.ajax({
-                url: 'index.php?route=extension/shipping/kazpost/' + processing +
+                url: 'index.php?route=' + extension + 'shipping/kazpost/' + processing +
                     '&token=<?php echo $token; ?>&file=' + filename + '&sheet=' + catalog[1] +
                     '&server=' + catalog[0],
                 dataType: 'json',
@@ -754,7 +756,7 @@
     /* Пересчитать стоимость доставки */
     $('input[name = \"weight\"], input[name=\'destination\'], select[name = \"method_id\"]').change(function () {
         $.ajax({
-            url: 'index.php?route=extension/shipping/kazpost/apigetrate&token=<?php echo $token; ?>',
+            url: 'index.php?route=' + extension + 'shipping/kazpost/apigetrate&token=<?php echo $token; ?>',
             dataType: 'text',
             data: {
                 weight: $('#input-weight').val(),

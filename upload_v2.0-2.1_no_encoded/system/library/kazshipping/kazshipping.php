@@ -23,7 +23,7 @@ class Exline {
 	}
 }
 
-/*  Server 1 Soap client  */
+/* Server 1 Soap client */
 class HelperInfo {
 
     public $HelperType;
@@ -50,23 +50,23 @@ class MailInfo {
 class KazpostWebClient extends SoapClient {
 
     public function __construct($wsdl = 'http://rates.kazpost.kz/postratesprod/postratesws.wsdl', $options = array(
-        'connection_timeout' => 90,
+        'connection_timeout' => 5,
         'cache_wsdl' => WSDL_CACHE_MEMORY,
         'trace' => 1,
-        'soap_version' => 'SOAP 1.2',
+        'soap_version' => 'SOAP_1_2',
         'encoding' => 'UTF-8',
-        'exceptions' => true,
-        'location' => 'http://rates.kazpost.kz:80/postratesprod/endpoints')) {
+        'exceptions' => 0,
+        'location' => 'http://rates.kazpost.kz/postratesprod/postratesws.wsdl')) {
 
         parent::__construct($wsdl, $options);
     }
 }
 
-/*  Server 2 Soap client  */
+/* Server 2 Soap client */
 class GetPostRateInfo {
 
     public $SndrCtg;
-    public $Contract='1224/АК';
+   // public $Contract='1224/АК';
     public $Product;
     public $MailCat;
     public $SendMethod;
@@ -76,20 +76,20 @@ class GetPostRateInfo {
     public $From;
     public $To;
     public $ToCountry='KZ';
-	public $PostMark = '';
+	// public $PostMark = '';
 
 }
 
 class KazpostWebClient2 extends SoapClient {
 
     public function __construct($wsdl = 'http://rates.kazpost.kz/postratesprodv2/postratesws.wsdl', $options = array(
-        'connection_timeout' => 90,
+        'connection_timeout' => 5,
         'cache_wsdl' => WSDL_CACHE_MEMORY,
         'trace' => 1,
-        'soap_version' => 'SOAP 1.2',
+        'soap_version' => 'SOAP_1_2',
         'encoding' => 'UTF-8',
-        'exceptions' => true,
-        'location' => 'http://rates.kazpost.kz:80/postratesprodv2/endpoints')) {
+        'exceptions' => 0,
+        'location' => 'http://rates.kazpost.kz/postratesprodv2/postratesws.wsdl')) {
 
         parent::__construct($wsdl, $options);
     }

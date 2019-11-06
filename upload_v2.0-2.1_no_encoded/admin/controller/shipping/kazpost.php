@@ -2,7 +2,7 @@
 
 include_once(DIR_SYSTEM . 'library/kazshipping/kazshipping.php');
 include_once(DIR_SYSTEM . 'library/kazpost/Classes/PHPExcel/IOFactory.php');
-define('MODULE_VERSION', 'v2.1.6');
+define('MODULE_VERSION', 'v2.1.7');
 
 class ControllerShippingKazpost extends Controller
 {
@@ -186,7 +186,7 @@ class ControllerShippingKazpost extends Controller
             $data['kazpost_declared_value'] = $this->request->post['kazpost_declared_value'];
         } else {
             $data['kazpost_declared_value'] = $this->config->get('kazpost_declared_value');
-        }        
+        }
 
         // Справочники
         if (isset($this->request->post['kazpost_server1_xls'])) {
@@ -267,10 +267,11 @@ class ControllerShippingKazpost extends Controller
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
-
+        $data['extension'] = $extension;
+         
         $tpl = version_compare(VERSION, '2.2.0', '>=') ? "" : ".tpl";
         $this->response->setOutput($this->load->view($extension . 'shipping/kazpost' . $tpl, $data));
-       // $this->response->setOutput($this->load->view('shipping/kazpost.tpl', $data));
+        // $this->response->setOutput($this->load->view('shipping/kazpost.tpl', $data));
     }
 
     protected function validate()
@@ -363,8 +364,8 @@ class ControllerShippingKazpost extends Controller
         $products = array(
             'P101', 'P102', 'P103', 'P104', 'P105', 'P109', 'P111', 'P112', 'P113', 'P114', 'P115', 'P118', 'P201', 'P202', 'P203', 'P204', 'P205', 'P206', 'P207', 'P208', 'P209', 'P210', 'P212', 'P213', 'P214',
         );
-        $sndrctds = array('1', '2', '3', '4', '5', '6', );
-        $mailcats = array('0', '1', '2', '3', '4', '5', );
+        $sndrctds = array('1', '2', '3', '4', '5', '6',);
+        $mailcats = array('0', '1', '2', '3', '4', '5',);
         $postmarks = array(
             '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
             '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40',
@@ -378,10 +379,10 @@ class ControllerShippingKazpost extends Controller
 
         $client = new KazpostWebClient2();
         $info = new GetPostRateInfo();
-        set_time_limit(2200);			
-//foreach ($products as $product) {
-//	foreach($mailcats as $mailcat){
-//	foreach($sndrctds as $sndrctd){
+        set_time_limit(2200);
+        //foreach ($products as $product) {
+        //	foreach($mailcats as $mailcat){
+        //	foreach($sndrctds as $sndrctd){
         foreach ($postmarks as $postmark) {
             $info->SndrCtg = '1';
             $info->Product = 'P104';
@@ -406,17 +407,16 @@ class ControllerShippingKazpost extends Controller
                 $rate = 'null';
             } else {
                 $rate = $response->Sum;
-            }			
-//	}
-	//}
-	//}	
+            }
+            //	}
+            //}
+            //}
         }
         if ($this->config->get('kazpost_pack') != 'null' && $rate != 'null') {  // упаковка
-            $rate += (int)$this->config->get('kazpost_pack');
+            $rate += (int) $this->config->get('kazpost_pack');
         }
 
         $this->response->setOutput(($rate === 'null') ? $response->ResponseInfo->ResponseText : $rate);
-
     }
 
     public function apigetrate()
@@ -440,14 +440,50 @@ class ControllerShippingKazpost extends Controller
             $destination_id = '';
         }
 
+        $rate = '';
 
-        if ($this->config->get('kazpost_api_server') === '1') {
+        // переключаемся на пользовательский обработчик
+        function myErrorHandler($errno, $errstr, $errfile, $errline)
+        {
+            if (!(error_reporting() & $errno)) {
+                // Этот код ошибки не включен в error_reporting,
+                // так что пусть обрабатываются стандартным обработчиком ошибок PHP
+                return false;
+            }
+
+            switch ($errno) {
+                case E_USER_ERROR:
+                    echo "<b>Пользовательская ОШИБКА</b> [$errno] $errstr<br />\n";
+                    echo "  Фатальная ошибка в строке $errline файла $errfile";
+                    echo ", PHP " . PHP_VERSION . " (" . PHP_OS . ")<br />\n";
+                    echo "Завершение работы...<br />\n";
+                    exit(1);
+                    break;
+
+                case E_USER_WARNING:
+                    echo "$errstr";
+                    break;
+
+                case E_USER_NOTICE:
+                    echo "<b>Пользовательское УВЕДОМЛЕНИЕ</b> [$errno] $errstr<br />\n";
+                    break;
+
+                default:
+                    //  echo "Неизвестная ошибка: [$errno] $errstr<br />\n";
+                    break;
+            }
+            /* Не запускаем внутренний обработчик ошибок PHP */
+            return true;
+        }
+
+        $crashesn = 0;
+        $max_connect = 3;
+
+        if ($this->config->get('kazpost_api_server') === '1' && $destination_id) {
             $methods = unserialize($this->config->get('kazpost_methods-server1'));
             $method = $methods[$id];
 
-            $client = new KazpostWebClient();
             $mailinfo = new MailInfo();
-
             $mailinfo->Product = ($method['product_id'] !== '-1') ? $method['product_id'] : '';
             $mailinfo->MailCat = ($method['mailcat_id'] !== '-1') ? $method['mailcat_id'] : '';
             $mailinfo->SendMethod = ($method['sendmethod_id'] !== '-1') ? $method['sendmethod_id'] : '';
@@ -458,20 +494,41 @@ class ControllerShippingKazpost extends Controller
             $params = new stdClass();
             $params->MailInfo = $mailinfo;
 
-            $response = $client->GetPostRate($params);
+            $old_error_handler = set_error_handler("myErrorHandler");
+            do {
+                try {
+                    $client = new KazpostWebClient();
+                    $response = $client->GetPostRate($params);
+                    if (is_soap_fault($response)) {
+                        throw new \Exception('Данные недоступны');
+                    } else {
+                        $crashesn = $max_connect;
+                        restore_error_handler();
+                    }
+                } catch (\Exception $e) {
+                    $crashesn++;
+
+                    if ($crashesn < $max_connect) {
+                        sleep(1);
+                    } else {
+                        $response->ResponseInfo->ResponseText = ''; // иначе вылетит в конце на NOTICE $response is not obj
+                        trigger_error("Сервер недоступен", E_USER_WARNING);
+                    }
+                }
+            } while ($crashesn < $max_connect);
+
             if (!isset($response->PostRate)) {
                 $rate = 'null';
             } else {
                 $rate = $response->PostRate;
             }
         }
-        if ($this->config->get('kazpost_api_server') === '2') {
+
+        if ($this->config->get('kazpost_api_server') === '2' && $destination_id) {
             $methods = unserialize($this->config->get('kazpost_methods-server2'));
             $method = $methods[$id];
-
-            $client = new KazpostWebClient2();
+            
             $info = new GetPostRateInfo();
-
             $info->SndrCtg = ($method['sndrctg_id'] !== '-1') ? $method['sndrctg_id'] : '';
             $info->Product = ($method['product_id'] !== '-1') ? $method['product_id'] : '';
             $info->MailCat = ($method['mailcat_id'] !== '-1') ? $method['mailcat_id'] : '';
@@ -480,11 +537,39 @@ class ControllerShippingKazpost extends Controller
             $info->Weight = $weight;
             $info->From = $this->config->get('kazpost_origin_id2');
             $info->To = $destination_id;
-            $info->PostMark = '';
+            // $info->PostMark = '';
             $params = new stdClass();
             $params->GetPostRateInfo = $info;
+            /*  $funcs = $client->__getFunctions(); */
 
-            $response = $client->GetPostRate($params);
+            $old_error_handler = set_error_handler("myErrorHandler");
+            do {
+                try {
+                    $client = new KazpostWebClient2();
+                    $response = $client->GetPostRate($params);
+                    if (is_soap_fault($response)) {
+                        // file_put_contents('kazpost.txt', print_r("FAULT ", true), FILE_APPEND);
+                        throw new \Exception('Данные недоступны');
+                    } else {
+                        $crashesn = $max_connect;
+                        restore_error_handler();
+                    }
+                } catch (\Exception $e) {
+                    $crashesn++;
+
+                    if ($crashesn < $max_connect) {
+                        sleep(1);
+                        // file_put_contents('kazpost.txt', print_r($crashesn, true), FILE_APPEND);
+                        // file_put_contents('kazpost.txt', print_r(PHP_EOL, true), FILE_APPEND);
+                    } else {
+                        // file_put_contents('kazpost.txt', print_r($e->getMessage(), true), FILE_APPEND);
+                        // file_put_contents('kazpost.txt', print_r(PHP_EOL, true), FILE_APPEND);
+                        $response->ResponseInfo->ResponseText = ''; // иначе вылетит в конце на NOTICE $response is not obj
+                        trigger_error("Сервер недоступен", E_USER_WARNING);
+                    }
+                }
+            } while ($crashesn < $max_connect);
+
             if (!isset($response->Sum)) {
                 $rate = 'null';
             } else {
@@ -492,8 +577,9 @@ class ControllerShippingKazpost extends Controller
             }
         }
 
-        if ($this->config->get('kazpost_pack') != 'null' && $rate != 'null') {  // упаковка
-            $rate += (int)$this->config->get('kazpost_pack');
+        // упаковка
+        if ($this->config->get('kazpost_pack') != 'null' && $rate != 'null' && $destination_id) {
+            $rate += (int) $this->config->get('kazpost_pack');
         }
 
         $this->response->setOutput(($rate === 'null') ? $response->ResponseInfo->ResponseText : $rate);
@@ -535,6 +621,6 @@ class ControllerShippingKazpost extends Controller
         $this->model_setting_setting->editSetting('kazpost', $data);
     }
 }
+
 class ControllerExtensionShippingKazpost extends ControllerShippingKazpost
-{
-}
+{ }
