@@ -54,6 +54,7 @@ class ModelShippingKazpost extends Model
 
             $quote_data = array();
             $q = 0;
+
             // переключаемся на пользовательский обработчик
             function myErrorHandler($errno, $errstr, $errfile, $errline)
             {
@@ -88,6 +89,10 @@ class ModelShippingKazpost extends Model
                 /* Не запускаем внутренний обработчик ошибок PHP */
                 return true;
             }
+
+            $crashesn = 0;
+            $max_connect = 3;
+
             foreach ($methods as $method) {
                 // расчет стоимости этой доставки
                 if ($destination_id) {
@@ -109,14 +114,37 @@ class ModelShippingKazpost extends Model
                         $params = new stdClass();
                         $params->MailInfo = $mailinfo;
 
-                        $response = $client->GetPostRate($params);
+                        $old_error_handler = set_error_handler("myErrorHandler");
+                        do {
+                            try {                                
+                                $response = $client->GetPostRate($params);
+                                if (is_soap_fault($response)) {
+                                    throw new \Exception('Данные недоступны');
+                                } else {
+                                    $crashesn = $max_connect;
+                                    restore_error_handler();
+                                }
+                            } catch (\Exception $e) {
+                                $crashesn++;
+
+                                if ($crashesn < $max_connect) {
+                                    sleep(1);
+                                } else {
+                                    $response->ResponseInfo->ResponseText = '';
+                                    trigger_error("Сервер недоступен", E_USER_WARNING);
+                                }
+                            }
+                        } while ($crashesn < $max_connect);
+
                         if (!isset($response->PostRate)) {
                             $rate = 'null';
                         } else {
                             $rate = $response->PostRate;
                         }
                     }
+
                     if ($server === '2') {
+                        $client = new KazpostWebClient2();
                         $info = new GetPostRateInfo();
                         $info->SndrCtg = ($method['sndrctg_id'] !== '-1') ? $method['sndrctg_id'] : '';
                         $info->Product = ($method['product_id'] !== '-1') ? $method['product_id'] : '';
@@ -131,14 +159,10 @@ class ModelShippingKazpost extends Model
                         $params->GetPostRateInfo = $info;
 
                         $old_error_handler = set_error_handler("myErrorHandler");
-                        $crashesn = 0;
-                        $max_connect = 3;
-                        $client = new KazpostWebClient2();
                         do {
-                            try {
-                                // $client = new KazpostWebClient2();
+                            try {                                
                                 $response = $client->GetPostRate($params);
-                                if (is_soap_fault($response)) {                                    
+                                if (is_soap_fault($response)) {
                                     throw new \Exception('Данные недоступны');
                                 } else {
                                     $crashesn = $max_connect;
@@ -148,8 +172,8 @@ class ModelShippingKazpost extends Model
                                 $crashesn++;
 
                                 if ($crashesn < $max_connect) {
-                                    sleep(1);                                    
-                                } else {                                    
+                                    sleep(1);
+                                } else {
                                     $response->ResponseInfo->ResponseText = '';
                                     trigger_error("Сервер недоступен", E_USER_WARNING);
                                 }

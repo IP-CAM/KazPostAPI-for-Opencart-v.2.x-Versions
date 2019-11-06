@@ -50,13 +50,13 @@ class MailInfo {
 class KazpostWebClient extends SoapClient {
 
     public function __construct($wsdl = 'http://rates.kazpost.kz/postratesprod/postratesws.wsdl', $options = array(
-        'connection_timeout' => 90,
+        'connection_timeout' => 5,
         'cache_wsdl' => WSDL_CACHE_MEMORY,
         'trace' => 1,
-        'soap_version' => 'SOAP 1.2',
+        'soap_version' => 'SOAP_1_2',
         'encoding' => 'UTF-8',
-        'exceptions' => true,
-        'location' => 'http://rates.kazpost.kz:80/postratesprod/endpoints')) {
+        'exceptions' => 0,
+        'location' => 'http://rates.kazpost.kz/postratesprod/postratesws.wsdl')) {
 
         parent::__construct($wsdl, $options);
     }

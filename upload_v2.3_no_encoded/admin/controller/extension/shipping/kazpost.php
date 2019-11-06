@@ -471,10 +471,12 @@ class ControllerShippingKazpost extends Controller
                     //  echo "Неизвестная ошибка: [$errno] $errstr<br />\n";
                     break;
             }
-
             /* Не запускаем внутренний обработчик ошибок PHP */
             return true;
         }
+
+        $crashesn = 0;
+        $max_connect = 3;
 
         if ($this->config->get('kazpost_api_server') === '1' && $destination_id) {
             $methods = unserialize($this->config->get('kazpost_methods-server1'));
@@ -493,18 +495,40 @@ class ControllerShippingKazpost extends Controller
             $params = new stdClass();
             $params->MailInfo = $mailinfo;
 
-            $response = $client->GetPostRate($params);
+            $old_error_handler = set_error_handler("myErrorHandler");
+            do {
+                try {
+                    $response = $client->GetPostRate($params);
+                    if (is_soap_fault($response)) {
+                        throw new \Exception('Данные недоступны');
+                    } else {
+                        $crashesn = $max_connect;
+                        restore_error_handler();
+                    }
+                } catch (\Exception $e) {
+                    $crashesn++;
+
+                    if ($crashesn < $max_connect) {
+                        sleep(1);
+                    } else {
+                        $response->ResponseInfo->ResponseText = ''; // иначе вылетит в конце на NOTICE $response is not obj
+                        trigger_error("Сервер недоступен", E_USER_WARNING);
+                    }
+                }
+            } while ($crashesn < $max_connect);
+
             if (!isset($response->PostRate)) {
                 $rate = 'null';
             } else {
                 $rate = $response->PostRate;
             }
         }
+
         if ($this->config->get('kazpost_api_server') === '2' && $destination_id) {
             $methods = unserialize($this->config->get('kazpost_methods-server2'));
             $method = $methods[$id];
 
-            // $client = new KazpostWebClient2();
+            $client = new KazpostWebClient2();
             $info = new GetPostRateInfo();
 
             $info->SndrCtg = ($method['sndrctg_id'] !== '-1') ? $method['sndrctg_id'] : '';
@@ -518,19 +542,15 @@ class ControllerShippingKazpost extends Controller
             // $info->PostMark = '';
             $params = new stdClass();
             $params->GetPostRateInfo = $info;
-            /*  $funcs = $client->__getFunctions();
-              file_put_contents('kazpost.txt', print_r($funcs, true), FILE_APPEND);
-              file_put_contents('kazpost.txt', print_r(PHP_EOL, true), FILE_APPEND); */
+            /*  $funcs = $client->__getFunctions(); */
+
             $old_error_handler = set_error_handler("myErrorHandler");
-            $crashesn = 0;
-            $max_connect = 3;
-            $client = new KazpostWebClient2();
             do {
                 try {
                     // $client = new KazpostWebClient2();
                     $response = $client->GetPostRate($params);
                     if (is_soap_fault($response)) {
-                        file_put_contents('kazpost.txt', print_r("FAULT ", true), FILE_APPEND);
+                        // file_put_contents('kazpost.txt', print_r("FAULT ", true), FILE_APPEND);
                         throw new \Exception('Данные недоступны');
                     } else {
                         $crashesn = $max_connect;
@@ -541,18 +561,16 @@ class ControllerShippingKazpost extends Controller
 
                     if ($crashesn < $max_connect) {
                         sleep(1);
-                        file_put_contents('kazpost.txt', print_r($crashesn, true), FILE_APPEND);
-                        file_put_contents('kazpost.txt', print_r(PHP_EOL, true), FILE_APPEND);
+                        // file_put_contents('kazpost.txt', print_r($crashesn, true), FILE_APPEND);
+                        // file_put_contents('kazpost.txt', print_r(PHP_EOL, true), FILE_APPEND);
                     } else {
-                        file_put_contents('kazpost.txt', print_r($e->getMessage(), true), FILE_APPEND);
-                        file_put_contents('kazpost.txt', print_r(PHP_EOL, true), FILE_APPEND);
-                        $response->ResponseInfo->ResponseText = '';
+                        // file_put_contents('kazpost.txt', print_r($e->getMessage(), true), FILE_APPEND);
+                        // file_put_contents('kazpost.txt', print_r(PHP_EOL, true), FILE_APPEND);
+                        $response->ResponseInfo->ResponseText = ''; // иначе вылетит в конце на NOTICE $response is not obj
                         trigger_error("Сервер недоступен", E_USER_WARNING);
                     }
                 }
             } while ($crashesn < $max_connect);
-
-
 
             if (!isset($response->Sum)) {
                 $rate = 'null';
