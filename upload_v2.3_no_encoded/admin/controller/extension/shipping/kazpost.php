@@ -482,9 +482,7 @@ class ControllerShippingKazpost extends Controller
             $methods = unserialize($this->config->get('kazpost_methods-server1'));
             $method = $methods[$id];
 
-            $client = new KazpostWebClient();
             $mailinfo = new MailInfo();
-
             $mailinfo->Product = ($method['product_id'] !== '-1') ? $method['product_id'] : '';
             $mailinfo->MailCat = ($method['mailcat_id'] !== '-1') ? $method['mailcat_id'] : '';
             $mailinfo->SendMethod = ($method['sendmethod_id'] !== '-1') ? $method['sendmethod_id'] : '';
@@ -498,6 +496,7 @@ class ControllerShippingKazpost extends Controller
             $old_error_handler = set_error_handler("myErrorHandler");
             do {
                 try {
+                    $client = new KazpostWebClient();
                     $response = $client->GetPostRate($params);
                     if (is_soap_fault($response)) {
                         throw new \Exception('Данные недоступны');
@@ -527,10 +526,8 @@ class ControllerShippingKazpost extends Controller
         if ($this->config->get('kazpost_api_server') === '2' && $destination_id) {
             $methods = unserialize($this->config->get('kazpost_methods-server2'));
             $method = $methods[$id];
-
-            $client = new KazpostWebClient2();
+            
             $info = new GetPostRateInfo();
-
             $info->SndrCtg = ($method['sndrctg_id'] !== '-1') ? $method['sndrctg_id'] : '';
             $info->Product = ($method['product_id'] !== '-1') ? $method['product_id'] : '';
             $info->MailCat = ($method['mailcat_id'] !== '-1') ? $method['mailcat_id'] : '';
@@ -547,7 +544,7 @@ class ControllerShippingKazpost extends Controller
             $old_error_handler = set_error_handler("myErrorHandler");
             do {
                 try {
-                    // $client = new KazpostWebClient2();
+                    $client = new KazpostWebClient2();
                     $response = $client->GetPostRate($params);
                     if (is_soap_fault($response)) {
                         // file_put_contents('kazpost.txt', print_r("FAULT ", true), FILE_APPEND);

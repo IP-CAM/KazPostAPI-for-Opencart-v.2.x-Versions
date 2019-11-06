@@ -92,6 +92,7 @@ class ModelShippingKazpost extends Model
 
             $crashesn = 0;
             $max_connect = 3;
+            $rate = '';
 
             foreach ($methods as $method) {
                 // расчет стоимости этой доставки
@@ -101,8 +102,7 @@ class ModelShippingKazpost extends Model
                     }
                     $vendor->franchise();
 
-                    if ($server === '1') {
-                        $client = new KazpostWebClient();
+                    if ($server === '1') {                        
                         $mailinfo = new MailInfo();
                         $mailinfo->Product = ($method['product_id'] !== '-1') ? $method['product_id'] : '';
                         $mailinfo->MailCat = ($method['mailcat_id'] !== '-1') ? $method['mailcat_id'] : '';
@@ -116,7 +116,8 @@ class ModelShippingKazpost extends Model
 
                         $old_error_handler = set_error_handler("myErrorHandler");
                         do {
-                            try {                                
+                            try {   
+                                $client = new KazpostWebClient();                             
                                 $response = $client->GetPostRate($params);
                                 if (is_soap_fault($response)) {
                                     throw new \Exception('Данные недоступны');
@@ -143,8 +144,7 @@ class ModelShippingKazpost extends Model
                         }
                     }
 
-                    if ($server === '2') {
-                        $client = new KazpostWebClient2();
+                    if ($server === '2') {                        
                         $info = new GetPostRateInfo();
                         $info->SndrCtg = ($method['sndrctg_id'] !== '-1') ? $method['sndrctg_id'] : '';
                         $info->Product = ($method['product_id'] !== '-1') ? $method['product_id'] : '';
@@ -160,7 +160,8 @@ class ModelShippingKazpost extends Model
 
                         $old_error_handler = set_error_handler("myErrorHandler");
                         do {
-                            try {                                
+                            try {  
+                                $client = new KazpostWebClient2();                              
                                 $response = $client->GetPostRate($params);
                                 if (is_soap_fault($response)) {
                                     throw new \Exception('Данные недоступны');
@@ -174,8 +175,8 @@ class ModelShippingKazpost extends Model
                                 if ($crashesn < $max_connect) {
                                     sleep(1);
                                 } else {
-                                    $response->ResponseInfo->ResponseText = '';
-                                    trigger_error("Сервер недоступен", E_USER_WARNING);
+                                    $response->ResponseInfo->ResponseText = 'Сервер недоступен';
+                                   // trigger_error("Сервер недоступен", E_USER_WARNING);
                                 }
                             }
                         } while ($crashesn < $max_connect);
@@ -196,9 +197,9 @@ class ModelShippingKazpost extends Model
                     $quote_data['kazpost_' . (string) $q] = array(
                         'code' => 'kazpost.kazpost_' . (string) $q,
                         'title' => $this->language->get('text_description') . $method['name'],
-                        'cost' => ($rate === 'null') ? $response->ResponseInfo->ResponseText : $rate,
+                        'cost' => ($rate === 'null') ? 0 : $rate,
                         'tax_class_id' => $this->config->get('kazpost_tax_class_id'),
-                        'text' => $this->currency->format($this->tax->calculate($rate, $this->config->get('kazpost_tax_class_id'), $this->config->get('config_tax')), 'KZT', 1),
+                        'text' => ($rate === 'null') ? $response->ResponseInfo->ResponseText : $this->currency->format($this->tax->calculate($rate, $this->config->get('kazpost_tax_class_id'), $this->config->get('config_tax')), 'KZT', 1),
                         'sort_order' => $method['sort_order'],
                     );
                 } else {
