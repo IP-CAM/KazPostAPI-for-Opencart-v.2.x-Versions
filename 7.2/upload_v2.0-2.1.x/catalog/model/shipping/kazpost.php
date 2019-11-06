@@ -1,191 +1,241 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-IOcwWS6HnSSTZ5vhtmlRzAIFebVegJzyQoC=
+<?php
+
+include_once(DIR_SYSTEM . 'library/kazshipping/kazshipping.php');
+include_once(DIR_SYSTEM . 'library/kazpost/Classes/PHPExcel/IOFactory.php');
+@include_once(DIR_SYSTEM . 'license/sllic.lic');
+
+class ModelShippingKazpost extends Model
+{
+
+    function getQuote($address)
+    {
+        $extension = version_compare(VERSION, '2.3.0', '>=') ? "extension/" : "";
+        $this->load->language($extension . 'shipping/kazpost');
+        $server = $this->config->get('kazpost_api_server');
+        $file = $server === '2' ? $this->config->get('kazpost_server2_xls') : $this->config->get('kazpost_server1_xls');
+        $methods = $server === '2' ? unserialize($this->config->get('kazpost_methods-server2')) : unserialize($this->config->get('kazpost_methods-server1'));
+        $sheet = $this->config->get('kazpost_fromto_sheetname');
+        $code =  $server === '2' ? 1 : 0;
+
+        // проверим, что адрес попадает в геозону
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int) $this->config->get('kazpost_geo_zone_id') . "' AND country_id = '" . (int) $address['country_id'] . "' AND (zone_id = '" . (int) $address['zone_id'] . "' OR zone_id = '0')");
+
+        if (!$this->config->get('kazpost_geo_zone_id')) {
+            $status = true;
+        } elseif ($query->num_rows) {
+            $status = true;
+        } else {
+            $status = false;
+        }
+
+        $method_data = array();
+
+        if ($status) {
+
+            // Прикинем вес
+            if ($this->config->get('config_weight_class_id') == 1) {
+                $weight = $this->cart->getWeight() * 1000;
+            } else {
+                $weight = $this->cart->getWeight();
+            }
+
+            $destination_city = mb_strtolower(trim(explode(',', $address['city'])[0]), 'UTF-8');
+            $destination_id = false;
+
+            $objPHPExcel = PHPExcel_IOFactory::load(DIR_SYSTEM . $file);
+            $objPHPExcel->setActiveSheetIndexByName($this->config->get('kazpost_fromto_sheetname'));
+            $aSheet = $code === 0 ? $objPHPExcel->getActiveSheet()->toArray(true, true) : $objPHPExcel->getActiveSheet()->toArray(true, true, true);
+
+            foreach ($aSheet as $aSheet) {
+                if ($destination_city == mb_strtolower(trim($aSheet[$code + 1]), 'UTF-8')) {
+                    $destination_id = $aSheet[$code];
+                }
+            }
+
+            $quote_data = array();
+            $q = 0;
+
+            // переключаемся на пользовательский обработчик
+            function myErrorHandler($errno, $errstr, $errfile, $errline)
+            {
+                if (!(error_reporting() & $errno)) {
+                    // Этот код ошибки не включен в error_reporting,
+                    // так что пусть обрабатываются стандартным обработчиком ошибок PHP
+                    return false;
+                }
+
+                switch ($errno) {
+                    case E_USER_ERROR:
+                        echo "<b>Пользовательская ОШИБКА</b> [$errno] $errstr<br />\n";
+                        echo "  Фатальная ошибка в строке $errline файла $errfile";
+                        echo ", PHP " . PHP_VERSION . " (" . PHP_OS . ")<br />\n";
+                        echo "Завершение работы...<br />\n";
+                        exit(1);
+                        break;
+
+                    case E_USER_WARNING:
+                        echo "$errstr";
+                        break;
+
+                    case E_USER_NOTICE:
+                        echo "<b>Пользовательское УВЕДОМЛЕНИЕ</b> [$errno] $errstr<br />\n";
+                        break;
+
+                    default:
+                        //  echo "Неизвестная ошибка: [$errno] $errstr<br />\n";
+                        break;
+                }
+
+                /* Не запускаем внутренний обработчик ошибок PHP */
+                return true;
+            }
+
+            $crashesn = 0;
+            $max_connect = 3;
+            $rate = '';
+
+            foreach ($methods as $method) {
+                // расчет стоимости этой доставки
+                if ($destination_id) {
+                    if (class_exists('Vendor')) {
+                        $vendor = new Vendor();
+                    }
+                    $vendor->franchise();
+
+                    if ($server === '1') {
+                        $mailinfo = new MailInfo();
+                        $mailinfo->Product = ($method['product_id'] !== '-1') ? $method['product_id'] : '';
+                        $mailinfo->MailCat = ($method['mailcat_id'] !== '-1') ? $method['mailcat_id'] : '';
+                        $mailinfo->SendMethod = ($method['sendmethod_id'] !== '-1') ? $method['sendmethod_id'] : '';
+                        $mailinfo->SpecMarks = ($method['specmarks_id'] !== '-1') ? $method['specmarks_id'] : '';
+                        $mailinfo->Weight = $weight;
+                        $mailinfo->From = $this->config->get('kazpost_origin_id1');
+                        $mailinfo->To = $destination_id;
+                        $params = new stdClass();
+                        $params->MailInfo = $mailinfo;
+                        
+                        $old_error_handler = set_error_handler("myErrorHandler");
+                        do {
+                            try {
+                                $client = new KazpostWebClient();
+                                $response = $client->GetPostRate($params);
+                                if (is_soap_fault($response)) {
+                                    throw new \Exception('Данные недоступны');
+                                } else {
+                                    $crashesn = $max_connect;
+                                    restore_error_handler();
+                                }
+                            } catch (\Exception $e) {
+                                $crashesn++;
+
+                                if ($crashesn < $max_connect) {
+                                    sleep(1);
+                                } else {
+                                    $response->ResponseInfo->ResponseText = 'Сервер недоступен';
+                                    // trigger_error("Сервер недоступен", E_USER_WARNING);
+                                }
+                            }
+                        } while ($crashesn < $max_connect);
+
+                        if (!isset($response->PostRate)) {
+                            $rate = 'null';
+                        } else {
+                            $rate = $response->PostRate;
+                        }
+                    }
+
+                    if ($server === '2') {
+                        $info = new GetPostRateInfo();
+                        $info->SndrCtg = ($method['sndrctg_id'] !== '-1') ? $method['sndrctg_id'] : '';
+                        $info->Product = ($method['product_id'] !== '-1') ? $method['product_id'] : '';
+                        $info->MailCat = ($method['mailcat_id'] !== '-1') ? $method['mailcat_id'] : '';
+                        $info->SendMethod = ($method['sendmethod_id'] !== '-1') ? $method['sendmethod_id'] : '';
+                        $info->Value =  $this->config->get('kazpost_declared_value');
+                        $info->Weight = $weight;
+                        $info->From = $this->config->get('kazpost_origin_id2');
+                        $info->To = $destination_id;
+                        $info->PostMark =  '';
+                        $params = new stdClass();
+                        $params->GetPostRateInfo = $info;
+
+                        $old_error_handler = set_error_handler("myErrorHandler");
+                        do {
+                            try {
+                                $client = new KazpostWebClient2();
+                                $response = $client->GetPostRate($params);
+                                if (is_soap_fault($response)) {
+                                    throw new \Exception('Данные недоступны');
+                                } else {
+                                    $crashesn = $max_connect;
+                                    restore_error_handler();
+                                }
+                            } catch (\Exception $e) {
+                                $crashesn++;
+
+                                if ($crashesn < $max_connect) {
+                                    sleep(1);
+                                } else {
+                                    $response->ResponseInfo->ResponseText = 'Сервер недоступен';
+                                    // trigger_error("Сервер недоступен", E_USER_WARNING);
+                                }
+                            }
+                        } while ($crashesn < $max_connect);
+
+                        if (!isset($response->Sum)) {
+                            $rate = 'null';
+                        } else {
+                            $rate = $response->Sum;
+                        }
+                    }
+
+                    if ($this->config->get('kazpost_pack') != 'null' && $rate != 'null') {  // упаковка
+                        $rate += (int) $this->config->get('kazpost_pack');
+                    }
+
+                    // теперь выдача результатов расчета на checkout
+
+                    $quote_data['kazpost_' . (string) $q] = array(
+                        'code' => 'kazpost.kazpost_' . (string) $q,
+                        'title' => $this->language->get('text_description') . $method['name'],
+                        'cost' => ($rate === 'null') ? 0 : $rate,
+                        'tax_class_id' => $this->config->get('kazpost_tax_class_id'),
+                        'text' => ($rate === 'null') ? $response->ResponseInfo->ResponseText : $this->currency->format($this->tax->calculate($rate, $this->config->get('kazpost_tax_class_id'), $this->config->get('config_tax')), 'KZT', 1),
+                        'sort_order' => $method['sort_order'],
+                    );
+                } else {
+
+                    $quote_data['kazpost_' . (string) $q] = array(
+                        'code' => 'kazpost.kazpost_' . (string) $q,
+                        'title' => $this->language->get('text_description') . $method['name'],
+                        'cost' => 0,
+                        'tax_class_id' => $this->config->get('kazpost_tax_class_id'),
+                        'text' => $this->language->get('error_destination_city'),
+                        'sort_order' => $method['sort_order'],
+                    );
+                }
+
+                $q++;
+            }
+
+            $sort_order = array();
+
+            foreach ($quote_data as $key => $value) {
+                $sort_order[$key] = $value['sort_order'];
+            }
+
+            array_multisort($sort_order, SORT_ASC, $quote_data);
+
+            $method_data = array(
+                'code' => 'kazpost',
+                'title' => $this->language->get('text_title'),
+                'quote' => $quote_data,
+                'sort_order' => $this->config->get('kazpost_sort_order'),
+                'error' => false
+            );
+        }
+        return $method_data;
+    }
+}
+
+class ModelExtensionShippingKazpost extends ModelShippingKazpost
+{ }
