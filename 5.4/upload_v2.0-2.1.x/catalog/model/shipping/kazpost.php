@@ -1,241 +1,186 @@
-<?php
-
-include_once(DIR_SYSTEM . 'library/kazshipping/kazshipping.php');
-include_once(DIR_SYSTEM . 'library/kazpost/Classes/PHPExcel/IOFactory.php');
-@include_once(DIR_SYSTEM . 'license/sllic.lic');
-
-class ModelShippingKazpost extends Model
-{
-
-    function getQuote($address)
-    {
-        $extension = version_compare(VERSION, '2.3.0', '>=') ? "extension/" : "";
-        $this->load->language($extension . 'shipping/kazpost');
-        $server = $this->config->get('kazpost_api_server');
-        $file = $server === '2' ? $this->config->get('kazpost_server2_xls') : $this->config->get('kazpost_server1_xls');
-        $methods = $server === '2' ? unserialize($this->config->get('kazpost_methods-server2')) : unserialize($this->config->get('kazpost_methods-server1'));
-        $sheet = $this->config->get('kazpost_fromto_sheetname');
-        $code =  $server === '2' ? 1 : 0;
-
-        // проверим, что адрес попадает в геозону
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int) $this->config->get('kazpost_geo_zone_id') . "' AND country_id = '" . (int) $address['country_id'] . "' AND (zone_id = '" . (int) $address['zone_id'] . "' OR zone_id = '0')");
-
-        if (!$this->config->get('kazpost_geo_zone_id')) {
-            $status = true;
-        } elseif ($query->num_rows) {
-            $status = true;
-        } else {
-            $status = false;
-        }
-
-        $method_data = array();
-
-        if ($status) {
-
-            // Прикинем вес
-            if ($this->config->get('config_weight_class_id') == 1) {
-                $weight = $this->cart->getWeight() * 1000;
-            } else {
-                $weight = $this->cart->getWeight();
-            }
-
-            $destination_city = mb_strtolower(trim(explode(',', $address['city'])[0]), 'UTF-8');
-            $destination_id = false;
-
-            $objPHPExcel = PHPExcel_IOFactory::load(DIR_SYSTEM . $file);
-            $objPHPExcel->setActiveSheetIndexByName($this->config->get('kazpost_fromto_sheetname'));
-            $aSheet = $code === 0 ? $objPHPExcel->getActiveSheet()->toArray(true, true) : $objPHPExcel->getActiveSheet()->toArray(true, true, true);
-
-            foreach ($aSheet as $aSheet) {
-                if ($destination_city == mb_strtolower(trim($aSheet[$code + 1]), 'UTF-8')) {
-                    $destination_id = $aSheet[$code];
-                }
-            }
-
-            $quote_data = array();
-            $q = 0;
-
-            // переключаемся на пользовательский обработчик
-            function myErrorHandler($errno, $errstr, $errfile, $errline)
-            {
-                if (!(error_reporting() & $errno)) {
-                    // Этот код ошибки не включен в error_reporting,
-                    // так что пусть обрабатываются стандартным обработчиком ошибок PHP
-                    return false;
-                }
-
-                switch ($errno) {
-                    case E_USER_ERROR:
-                        echo "<b>Пользовательская ОШИБКА</b> [$errno] $errstr<br />\n";
-                        echo "  Фатальная ошибка в строке $errline файла $errfile";
-                        echo ", PHP " . PHP_VERSION . " (" . PHP_OS . ")<br />\n";
-                        echo "Завершение работы...<br />\n";
-                        exit(1);
-                        break;
-
-                    case E_USER_WARNING:
-                        echo "$errstr";
-                        break;
-
-                    case E_USER_NOTICE:
-                        echo "<b>Пользовательское УВЕДОМЛЕНИЕ</b> [$errno] $errstr<br />\n";
-                        break;
-
-                    default:
-                        //  echo "Неизвестная ошибка: [$errno] $errstr<br />\n";
-                        break;
-                }
-
-                /* Не запускаем внутренний обработчик ошибок PHP */
-                return true;
-            }
-
-            $crashesn = 0;
-            $max_connect = 3;
-            $rate = '';
-
-            foreach ($methods as $method) {
-                // расчет стоимости этой доставки
-                if ($destination_id) {
-                    if (class_exists('Vendor')) {
-                        $vendor = new Vendor();
-                    }
-                    $vendor->franchise();
-
-                    if ($server === '1') {
-                        $mailinfo = new MailInfo();
-                        $mailinfo->Product = ($method['product_id'] !== '-1') ? $method['product_id'] : '';
-                        $mailinfo->MailCat = ($method['mailcat_id'] !== '-1') ? $method['mailcat_id'] : '';
-                        $mailinfo->SendMethod = ($method['sendmethod_id'] !== '-1') ? $method['sendmethod_id'] : '';
-                        $mailinfo->SpecMarks = ($method['specmarks_id'] !== '-1') ? $method['specmarks_id'] : '';
-                        $mailinfo->Weight = $weight;
-                        $mailinfo->From = $this->config->get('kazpost_origin_id1');
-                        $mailinfo->To = $destination_id;
-                        $params = new stdClass();
-                        $params->MailInfo = $mailinfo;
-                        
-                        $old_error_handler = set_error_handler("myErrorHandler");
-                        do {
-                            try {
-                                $client = new KazpostWebClient();
-                                $response = $client->GetPostRate($params);
-                                if (is_soap_fault($response)) {
-                                    throw new \Exception('Данные недоступны');
-                                } else {
-                                    $crashesn = $max_connect;
-                                    restore_error_handler();
-                                }
-                            } catch (\Exception $e) {
-                                $crashesn++;
-
-                                if ($crashesn < $max_connect) {
-                                    sleep(1);
-                                } else {
-                                    $response->ResponseInfo->ResponseText = 'Сервер недоступен';
-                                    // trigger_error("Сервер недоступен", E_USER_WARNING);
-                                }
-                            }
-                        } while ($crashesn < $max_connect);
-
-                        if (!isset($response->PostRate)) {
-                            $rate = 'null';
-                        } else {
-                            $rate = $response->PostRate;
-                        }
-                    }
-
-                    if ($server === '2') {
-                        $info = new GetPostRateInfo();
-                        $info->SndrCtg = ($method['sndrctg_id'] !== '-1') ? $method['sndrctg_id'] : '';
-                        $info->Product = ($method['product_id'] !== '-1') ? $method['product_id'] : '';
-                        $info->MailCat = ($method['mailcat_id'] !== '-1') ? $method['mailcat_id'] : '';
-                        $info->SendMethod = ($method['sendmethod_id'] !== '-1') ? $method['sendmethod_id'] : '';
-                        $info->Value =  $this->config->get('kazpost_declared_value');
-                        $info->Weight = $weight;
-                        $info->From = $this->config->get('kazpost_origin_id2');
-                        $info->To = $destination_id;
-                        $info->PostMark =  '';
-                        $params = new stdClass();
-                        $params->GetPostRateInfo = $info;
-
-                        $old_error_handler = set_error_handler("myErrorHandler");
-                        do {
-                            try {
-                                $client = new KazpostWebClient2();
-                                $response = $client->GetPostRate($params);
-                                if (is_soap_fault($response)) {
-                                    throw new \Exception('Данные недоступны');
-                                } else {
-                                    $crashesn = $max_connect;
-                                    restore_error_handler();
-                                }
-                            } catch (\Exception $e) {
-                                $crashesn++;
-
-                                if ($crashesn < $max_connect) {
-                                    sleep(1);
-                                } else {
-                                    $response->ResponseInfo->ResponseText = 'Сервер недоступен';
-                                    // trigger_error("Сервер недоступен", E_USER_WARNING);
-                                }
-                            }
-                        } while ($crashesn < $max_connect);
-
-                        if (!isset($response->Sum)) {
-                            $rate = 'null';
-                        } else {
-                            $rate = $response->Sum;
-                        }
-                    }
-
-                    if ($this->config->get('kazpost_pack') != 'null' && $rate != 'null') {  // упаковка
-                        $rate += (int) $this->config->get('kazpost_pack');
-                    }
-
-                    // теперь выдача результатов расчета на checkout
-
-                    $quote_data['kazpost_' . (string) $q] = array(
-                        'code' => 'kazpost.kazpost_' . (string) $q,
-                        'title' => $this->language->get('text_description') . $method['name'],
-                        'cost' => ($rate === 'null') ? 0 : $rate,
-                        'tax_class_id' => $this->config->get('kazpost_tax_class_id'),
-                        'text' => ($rate === 'null') ? $response->ResponseInfo->ResponseText : $this->currency->format($this->tax->calculate($rate, $this->config->get('kazpost_tax_class_id'), $this->config->get('config_tax')), 'KZT', 1),
-                        'sort_order' => $method['sort_order'],
-                    );
-                } else {
-
-                    $quote_data['kazpost_' . (string) $q] = array(
-                        'code' => 'kazpost.kazpost_' . (string) $q,
-                        'title' => $this->language->get('text_description') . $method['name'],
-                        'cost' => 0,
-                        'tax_class_id' => $this->config->get('kazpost_tax_class_id'),
-                        'text' => $this->language->get('error_destination_city'),
-                        'sort_order' => $method['sort_order'],
-                    );
-                }
-
-                $q++;
-            }
-
-            $sort_order = array();
-
-            foreach ($quote_data as $key => $value) {
-                $sort_order[$key] = $value['sort_order'];
-            }
-
-            array_multisort($sort_order, SORT_ASC, $quote_data);
-
-            $method_data = array(
-                'code' => 'kazpost',
-                'title' => $this->language->get('text_title'),
-                'quote' => $quote_data,
-                'sort_order' => $this->config->get('kazpost_sort_order'),
-                'error' => false
-            );
-        }
-        return $method_data;
-    }
-}
-
-class ModelExtensionShippingKazpost extends ModelShippingKazpost
-{ }
+<?php //004fb
+if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
+?>
+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
