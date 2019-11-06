@@ -717,15 +717,32 @@
         ).not('[type=hidden]').autocomplete(settings);
     }
 
-
-    $('[id ^= tab-method] >tbody').on('click', '.btn-danger', function () {
+    /* Удалить метод */
+    $('[id = tab-method-server1] >tbody').on('click', '.btn-danger', function () {
         if (confirm('<?php echo $text_confirm; ?>')) {
             $(this).closest('tr').remove();
-            $('[id ^= tab-method] >tbody').find('tr').each(function (i, e) {
-                $(e).find('td').each(function (j, k) {
-                    nameold = $(k).find('input').attr("name");
-                    if (nameold !== undefined) {
-                        nameold.replace(/\d+/g, i.toString());
+            $('[id = tab-method-server1] >tbody').find('tr').each(function (i, e) {
+                $(e).find('td >input').each(function (j, k) {
+                   let oldname = $(this).attr("name");
+                    if (oldname !== undefined) {                        
+                        let newname = oldname.replace(/\[\d+\]/, '['+i.toString()+']');
+                        $(this).attr("name", newname);
+                    }
+                });
+                $(e).find('input[name *=\\[id\\]]').val(i);
+                $(e).find('>td:first').text(i);
+            });
+        }
+    });
+    $('[id = tab-method-server2] >tbody').on('click', '.btn-danger', function () {
+        if (confirm('<?php echo $text_confirm; ?>')) {
+            $(this).closest('tr').remove();
+            $('[id = tab-method-server2] >tbody').find('tr').each(function (i, e) {
+                $(e).find('td >input').each(function (j, k) {
+                   let oldname = $(this).attr("name");
+                    if (oldname !== undefined) {                        
+                        let newname = oldname.replace(/\[\d+\]/, '['+i.toString()+']');
+                        $(this).attr("name", newname);
                     }
                 });
                 $(e).find('input[name *=\\[id\\]]').val(i);
@@ -734,6 +751,7 @@
         }
     });
 
+    /* Пересчитать стоимость доставки */
     $('input[name = \"weight\"], input[name=\'destination\'], select[name = \"method_id\"]').change(function () {
         $.ajax({
             url: 'index.php?route=extension/shipping/kazpost/apigetrate&token=<?php echo $token; ?>',

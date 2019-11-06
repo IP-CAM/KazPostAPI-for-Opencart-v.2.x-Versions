@@ -138,8 +138,7 @@ class ModelShippingKazpost extends Model
                             try {
                                 // $client = new KazpostWebClient2();
                                 $response = $client->GetPostRate($params);
-                                if (is_soap_fault($response)) {
-                                    file_put_contents('kazpost.txt', print_r("FAULT ", true), FILE_APPEND);
+                                if (is_soap_fault($response)) {                                    
                                     throw new \Exception('Данные недоступны');
                                 } else {
                                     $crashesn = $max_connect;
@@ -149,12 +148,8 @@ class ModelShippingKazpost extends Model
                                 $crashesn++;
 
                                 if ($crashesn < $max_connect) {
-                                    sleep(1);
-                                    file_put_contents('kazpost.txt', print_r($crashesn, true), FILE_APPEND);
-                                    file_put_contents('kazpost.txt', print_r(PHP_EOL, true), FILE_APPEND);
-                                } else {
-                                    file_put_contents('kazpost.txt', print_r($e->getMessage(), true), FILE_APPEND);
-                                    file_put_contents('kazpost.txt', print_r(PHP_EOL, true), FILE_APPEND);
+                                    sleep(1);                                    
+                                } else {                                    
                                     $response->ResponseInfo->ResponseText = '';
                                     trigger_error("Сервер недоступен", E_USER_WARNING);
                                 }
